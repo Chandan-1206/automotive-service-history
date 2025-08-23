@@ -5,6 +5,10 @@ __pycache__/
 *.pyd
 venv/
 .env
+honda/Include/
+honda/Lib/
+honda/Scripts/
+pyvenv.cfg
 
 # Databases
 *.db
