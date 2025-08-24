@@ -1,73 +1,44 @@
-import mysql.connector
-
-# Connect to database
-conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="test",
-    database="automotive_db"
-)
-cursor = conn.cursor()
-
-def add_vehicle():
-    vin = input("Enter VIN: ")
-    plate = input("Enter License Plate: ")
-    model = input("Enter Model: ")
-    year = int(input("Enter Year: "))
-    owner = input("Enter Owner Name: ")
-    contact = input("Enter Owner Contact: ")
-
-    cursor.execute("""
-        INSERT INTO vehicles (vin, license_plate, model, year, owner_name, owner_contact)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    """, (vin, plate, model, year, owner, contact))
-    conn.commit()
-    print("✅ Vehicle added successfully!\n")
-
-def view_vehicles():
-    cursor.execute("SELECT * FROM vehicles")
-    rows = cursor.fetchall()
-    for row in rows:
-        print(row)
-    print()
-
-def update_vehicle():
-    vid = input("Enter Vehicle VIN to update: ")
-    new_owner = input("Enter new owner name: ")
-    cursor.execute("UPDATE vehicles SET owner_name=%s WHERE vin=%s", (new_owner, vid))
-    conn.commit()
-    print("✅ Vehicle updated successfully!\n")
-
-def delete_vehicle():
-    vid = input("Enter Vehicle VIN to delete: ")
-    cursor.execute("DELETE FROM vehicles WHERE vin=%s", (vid,))
-    conn.commit()
-    print("✅ Vehicle deleted successfully!\n")
+import crud
 
 def menu():
     while True:
         print("\n--- Vehicle Management ---")
         print("1. Add Vehicle")
         print("2. View Vehicles")
-        print("3. Update Vehicle Owner")
+        print("3. Update Vehicle")
         print("4. Delete Vehicle")
         print("5. Exit")
+        choice = input("Enter choice: ")
 
-        choice = input("Choose option: ")
         if choice == "1":
-            add_vehicle()
+            vin = input("VIN: ")
+            plate = input("License Plate: ")
+            model = input("Model: ")
+            year = int(input("Year: "))
+            owner = input("Owner Name: ")
+            contact = input("Owner Contact: ")
+            crud.add_vehicle(vin, plate, model, year, owner, contact)
+
         elif choice == "2":
-            view_vehicles()
+            vehicles = crud.view_vehicles()
+            for v in vehicles:
+                print(v)
+
         elif choice == "3":
-            update_vehicle()
+            vin = input("Enter VIN to update: ")
+            field = input("Field to update (license_plate/model/year/owner_name/owner_contact): ")
+            new_value = input("New value: ")
+            crud.update_vehicle(vin, field, new_value)
+
         elif choice == "4":
-            delete_vehicle()
+            vin = input("Enter VIN to delete: ")
+            crud.delete_vehicle(vin)
+
         elif choice == "5":
             break
+
         else:
-            print("❌ Invalid choice, try again.")
+            print("Invalid choice!")
 
-menu()
-
-cursor.close()
-conn.close()
+if __name__ == "__main__":
+    menu()
