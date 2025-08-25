@@ -1,4 +1,4 @@
-import mysql.connector
+import mysql.connector # pyright: ignore
 
 # Connect to MySQL server (adjust user/pass if needed)
 conn = mysql.connector.connect(

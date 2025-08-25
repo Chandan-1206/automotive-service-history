@@ -1,4 +1,4 @@
-import mysql.connector # type: ignore
+import mysql.connector  # type: ignore
 
 def get_connection():
     return mysql.connector.connect(
@@ -8,6 +8,7 @@ def get_connection():
         database="automotive_db"
     )
 
+# CREATE
 def add_vehicle(vin, plate, model, year, owner, contact):
     conn = get_connection()
     cursor = conn.cursor()
@@ -16,26 +17,47 @@ def add_vehicle(vin, plate, model, year, owner, contact):
         VALUES (%s, %s, %s, %s, %s, %s)
     """, (vin, plate, model, year, owner, contact))
     conn.commit()
+    cursor.close()
     conn.close()
 
+# READ all
 def view_vehicles():
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)   # returns rows as dicts (easier for templates/json)
     cursor.execute("SELECT * FROM vehicles")
     rows = cursor.fetchall()
+    cursor.close()
     conn.close()
     return rows
 
-def update_vehicle(vin, field, new_value):
+# READ one (by id)
+def get_vehicle_by_id(vehicle_id):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM vehicles WHERE id=%s", (vehicle_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return result
+
+# UPDATE
+def update_vehicle(vehicle_id, vin, plate, model, year, owner, contact):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute(f"UPDATE vehicles SET {field} = %s WHERE vin = %s", (new_value, vin))
+    cursor.execute("""
+        UPDATE vehicles
+        SET vin=%s, license_plate=%s, model=%s, year=%s, owner_name=%s, owner_contact=%s
+        WHERE id=%s
+    """, (vin, plate, model, year, owner, contact, vehicle_id))
     conn.commit()
+    cursor.close()
     conn.close()
 
-def delete_vehicle(vin):
+# DELETE
+def delete_vehicle(vehicle_id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM vehicles WHERE vin = %s", (vin,))
+    cursor.execute("DELETE FROM vehicles WHERE id=%s", (vehicle_id,))
     conn.commit()
+    cursor.close()
     conn.close()

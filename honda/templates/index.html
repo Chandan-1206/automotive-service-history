@@ -1,14 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vehicle Records</title>
+    <title>Honda Internship</title>
 </head>
 <body>
-    <h1>Vehicle Records</h1>
-    <ul>
-        {% for v in vehicles %}
-            <li>{{ v }}</li>
-        {% endfor %}
-    </ul>
+    <h1>Vehicles List</h1>
+    <ul id="vehicle-list"></ul>
+
+    <h2>Add Vehicle</h2>
+    <form id="add-form">
+        <input type="text" id="make" placeholder="Make" required>
+        <input type="text" id="model" placeholder="Model" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <h2>Update Vehicle</h2>
+    <form id="update-form">
+        <input type="number" id="update-id" placeholder="Vehicle ID" required>
+        <input type="text" id="update-make" placeholder="New Make">
+        <input type="text" id="update-model" placeholder="New Model">
+        <button type="submit">Update</button>
+    </form>
+
+    <h2>Delete Vehicle</h2>
+    <form id="delete-form">
+        <input type="number" id="delete-id" placeholder="Vehicle ID" required>
+        <button type="submit">Delete</button>
+    </form>
+
+    <script>
+        const API_URL = "http://127.0.0.1:5000";
+
+        // Load vehicles
+        function loadVehicles() {
+            fetch(`${API_URL}/vehicles`)
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById("vehicle-list");
+                    list.innerHTML = "";
+                    data.forEach(item => {
+                        const li = document.createElement("li");
+                        li.textContent = `${item.id}: ${item.make} ${item.model}`;
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        loadVehicles();
+
+        // Add vehicle
+        document.getElementById("add-form").addEventListener("submit", e => {
+            e.preventDefault();
+            const make = document.getElementById("make").value;
+            const model = document.getElementById("model").value;
+
+            fetch(`${API_URL}/vehicles`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ make, model })
+            }).then(() => loadVehicles());
+        });
+
+        // Update vehicle
+        document.getElementById("update-form").addEventListener("submit", e => {
+            e.preventDefault();
+            const id = document.getElementById("update-id").value;
+            const make = document.getElementById("update-make").value;
+            const model = document.getElementById("update-model").value;
+
+            fetch(`${API_URL}/vehicles/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ make, model })
+            }).then(() => loadVehicles());
+        });
+
+        // Delete vehicle
+        document.getElementById("delete-form").addEventListener("submit", e => {
+            e.preventDefault();
+            const id = document.getElementById("delete-id").value;
+
+            fetch(`${API_URL}/vehicles/${id}`, {
+                method: "DELETE"
+            }).then(() => loadVehicles());
+        });
+    </script>
 </body>
 </html>
