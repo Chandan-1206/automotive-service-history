@@ -33,7 +33,7 @@ def update_vehicle(vehicle_id):
         year = request.form['year']
         owner = request.form['owner']
         contact = request.form['contact']
-        crud.update_vehicle(vehicle_id, plate, vin, model, year, owner, contact)
+        crud.update_vehicle(vehicle_id, vin, plate, model, year, owner, contact)
         return redirect(url_for('index'))
     vehicle = crud.get_vehicle_by_id(vehicle_id)
     return render_template('update.html', vehicle=vehicle)
