@@ -8,7 +8,7 @@ def get_connection():
         database="automotive_db"
     )
 
-# CREATE
+# ---------------- VEHICLES ----------------
 def add_vehicle(vin, plate, model, year, owner, contact):
     conn = get_connection()
     cursor = conn.cursor()
@@ -20,17 +20,15 @@ def add_vehicle(vin, plate, model, year, owner, contact):
     cursor.close()
     conn.close()
 
-# READ all
 def view_vehicles():
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)   # returns rows as dicts (easier for templates/json)
-    cursor.execute("SELECT * FROM vehicles")
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, vin, license_plate, model, year, owner_name, owner_contact FROM vehicles")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
     return rows
 
-# READ one (by id)
 def get_vehicle_by_id(vehicle_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -40,7 +38,6 @@ def get_vehicle_by_id(vehicle_id):
     conn.close()
     return result
 
-# UPDATE
 def update_vehicle(vehicle_id, vin, plate, model, year, owner, contact):
     conn = get_connection()
     cursor = conn.cursor()
@@ -53,7 +50,7 @@ def update_vehicle(vehicle_id, vin, plate, model, year, owner, contact):
     cursor.close()
     conn.close()
 
-# DELETE
+
 def delete_vehicle(vehicle_id):
     conn = get_connection()
     cursor = conn.cursor()
@@ -61,3 +58,23 @@ def delete_vehicle(vehicle_id):
     conn.commit()
     cursor.close()
     conn.close()
+
+# ---------------- EMPLOYEES ----------------
+def verify_employee(employee_id, password):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM employees WHERE employee_id=%s AND password=%s", (employee_id, password))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
+
+# ---------------- CUSTOMERS ----------------
+def verify_customer(owner_name, password):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM vehicles WHERE owner_name=%s AND password=%s", (owner_name, password))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
