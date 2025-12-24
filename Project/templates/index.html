@@ -349,7 +349,7 @@
         </div>
         {% endif %}
 
-                <!-- Search Result Display -->
+        <!-- Search Result Display -->
         {% if search_result %}
         <div class="row justify-content-center mb-5">
             <div class="col-md-10">
@@ -387,10 +387,6 @@
                                 <h6 class="text-muted">Contact</h6>
                                 <p class="fs-5">{{ search_result.owner_contact }}</p>
                             </div>
-                        </div>
-                        <div class="alert alert-info mt-3">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Note:</strong> To view complete service history and detailed records, please log in to your account.
                         </div>
                         <div class="text-center mt-3">
                             {% if session.user and session.user.role == "employee" %}
