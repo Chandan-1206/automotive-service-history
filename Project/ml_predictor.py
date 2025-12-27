@@ -16,11 +16,13 @@ class ServiceRecommendationSystem:
     def load_model(self):
         """Load the trained model and encoders"""
         try:
-            model_path = 'service_recommendation_model.pkl'
-            mlb_path = 'mlb_encoder.pkl'
-            company_path = 'company_encoder.pkl'
-            model_enc_path = 'model_encoder.pkl'
-            feature_path = 'feature_info.pkl'
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+            model_path = os.path.join(BASE_DIR, 'service_recommendation_model.pkl')
+            mlb_path = os.path.join(BASE_DIR, 'mlb_encoder.pkl')
+            company_path = os.path.join(BASE_DIR, 'company_encoder.pkl')
+            model_enc_path = os.path.join(BASE_DIR, 'model_encoder.pkl')
+            feature_path = os.path.join(BASE_DIR, 'feature_info.pkl')
             
             # Check if all files exist
             required_files = [model_path, mlb_path, company_path, model_enc_path, feature_path]
